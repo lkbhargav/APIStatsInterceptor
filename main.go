@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
-	requests "bitbucket.org/bluegreenbrands/bga-go-requests"
 	"github.com/dustin/go-humanize"
 	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
+	"github.com/lkbhargav/requests"
 )
 
 func main() {
