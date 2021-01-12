@@ -1,12 +1,12 @@
 package main
 
 import (
+	"APIStatsInterceptor/types"
+	"APIStatsInterceptor/util"
 	"flag"
 	"fmt"
 	"log"
 	"os"
-	"statsWidget/types"
-	"statsWidget/util"
 	"strings"
 	"time"
 

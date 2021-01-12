@@ -1,4 +1,4 @@
-module statsWidget
+module APIStatsInterceptor
 
 go 1.15
 

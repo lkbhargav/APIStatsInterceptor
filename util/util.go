@@ -1,8 +1,8 @@
 package util
 
 import (
+	"APIStatsInterceptor/types"
 	"errors"
-	"statsWidget/types"
 	"strconv"
 	"strings"
 )
