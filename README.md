@@ -41,10 +41,10 @@ go run main.go -url="http://localhost:7700/stats" -path="DBSize^databaseSize^DAT
 
 Output:
 ```
-Date: Mon, 11 Jan 2021 22:56:18 EST | URL: http://localhost/stats Frequency: 1s
+Date: Mon, 11 Jan 2021 22:56:18 EST | URL: http://localhost/stats | Frequency: 1s
 
-DBSize: 351 MB
-# Docs: 124,917
+DBSize: 350 MB
+# Docs: 121,909
 Indexing?: true
 ```
 
