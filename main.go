@@ -69,6 +69,8 @@ func main() {
 
 	uiEvents := ui.PollEvents()
 
+	var txt string
+
 	go func() { // running in a goroutine to make the keyboard events bind and work
 		for {
 			resp := requests.Request{
@@ -76,36 +78,39 @@ func main() {
 				Headers: headers,
 			}.Do()
 
+			txt = ""
+
 			if resp.Error != nil {
-				fmt.Println("Error trying to perform request to the specified URL. Error: " + resp.Error.Error())
-				os.Exit(1)
+				txt = fmt.Sprintf("Error: %v | Please check the URL and try again later.", err)
 			}
 
 			var tmp []string
-
-			txt := fmt.Sprintf("Date: %v | URL: %v | Frequency: %vs\n\n", time.Now().Format(time.RFC1123), url, float64(*frequency)/1000)
 
 			p.SetRect(0, 0, 1000, len(sets)+1*100)
 
 			p.Border = false
 
-			for _, path := range sets {
-				tmp = []string{"response"}
-				tmp = append(tmp, path.Path...)
+			if txt == "" {
+				txt = fmt.Sprintf("Date: %v | URL: %v | Frequency: %vs\n\n", time.Now().Format(time.RFC1123), url, float64(*frequency)/1000)
 
-				switch path.Option {
-				case types.Comma:
-					txt = txt + fmt.Sprintf("%v: %v\n\n", path.Name, humanize.Comma(int64(util.GetValNestedMap(resp.Response, tmp).(float64))))
-				case types.Percent:
-					txt = txt + fmt.Sprintf("%v: %v%%\n\n", path.Name, util.GetValNestedMap(resp.Response, tmp))
-				case types.Data:
-					txt = txt + fmt.Sprintf("%v: %v\n\n", path.Name, humanize.Bytes(uint64(util.GetValNestedMap(resp.Response, tmp).(float64))))
-				case types.Prefix:
-					txt = txt + fmt.Sprintf("%v: %v %v\n\n", path.Name, path.OptionalVal, util.GetValNestedMap(resp.Response, tmp))
-				case types.Suffix:
-					txt = txt + fmt.Sprintf("%v: %v %v\n\n", path.Name, util.GetValNestedMap(resp.Response, tmp), path.OptionalVal)
-				default:
-					txt = txt + fmt.Sprintf("%v: %v\n\n", path.Name, util.GetValNestedMap(resp.Response, tmp))
+				for _, path := range sets {
+					tmp = []string{"response"}
+					tmp = append(tmp, path.Path...)
+
+					switch path.Option {
+					case types.Comma:
+						txt = txt + fmt.Sprintf("%v: %v\n\n", path.Name, humanize.Comma(int64(util.GetValNestedMap(resp.Response, tmp).(float64))))
+					case types.Percent:
+						txt = txt + fmt.Sprintf("%v: %v%%\n\n", path.Name, util.GetValNestedMap(resp.Response, tmp))
+					case types.Data:
+						txt = txt + fmt.Sprintf("%v: %v\n\n", path.Name, humanize.Bytes(uint64(util.GetValNestedMap(resp.Response, tmp).(float64))))
+					case types.Prefix:
+						txt = txt + fmt.Sprintf("%v: %v %v\n\n", path.Name, path.OptionalVal, util.GetValNestedMap(resp.Response, tmp))
+					case types.Suffix:
+						txt = txt + fmt.Sprintf("%v: %v %v\n\n", path.Name, util.GetValNestedMap(resp.Response, tmp), path.OptionalVal)
+					default:
+						txt = txt + fmt.Sprintf("%v: %v\n\n", path.Name, util.GetValNestedMap(resp.Response, tmp))
+					}
 				}
 			}
 
