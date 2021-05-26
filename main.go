@@ -3,6 +3,7 @@ package main
 import (
 	"APIStatsInterceptor/types"
 	"APIStatsInterceptor/util"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -29,6 +30,12 @@ func main() {
 	var frequency *int
 	frequency = flag.Int("freq", 1000, "time in milliseconds")
 
+	var jsonBody string
+	flag.StringVar(&jsonBody, "jsonBody", "", "Eg. {\"name\":\"Jameson\"}")
+
+	var requestMethod string
+	flag.StringVar(&requestMethod, "requestMethod", "GET", "Supported values => GET,POST,PUT")
+
 	flag.Parse()
 
 	if !strings.Contains(url, "://") {
@@ -41,6 +48,12 @@ func main() {
 		fmt.Println("Invalid path passed, please check the format and retry again | Format: Status^status^COMMA|Nodes^number_of_nodes^PERCENT")
 		fmt.Println(err)
 		os.Exit(1)
+	}
+
+	var reqBody map[string]interface{}
+
+	if jsonBody != "" {
+		json.Unmarshal([]byte(jsonBody), &reqBody)
 	}
 
 	headers := make(map[string]string)
@@ -73,10 +86,26 @@ func main() {
 
 	go func() { // running in a goroutine to make the keyboard events bind and work
 		for {
-			resp := requests.Request{
-				URL:     url,
-				Headers: headers,
-			}.Do()
+			var req requests.Request
+
+			req.URL = url
+			req.Headers = headers
+
+			if requestMethod == "POST" {
+				req.Method = requests.POST
+
+				if len(reqBody) > 0 {
+					req.JSONBody = reqBody
+				}
+			} else if requestMethod == "PUT" {
+				req.Method = requests.PUT
+
+				if len(reqBody) > 0 {
+					req.JSONBody = reqBody
+				}
+			}
+
+			resp := req.Do()
 
 			txt = ""
 
