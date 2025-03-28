@@ -36,6 +36,9 @@ func main() {
 	var requestMethod string
 	flag.StringVar(&requestMethod, "requestMethod", "GET", "Supported values => GET,POST,PUT")
 
+	var color string
+	flag.StringVar(&color, "color", "black", "Supported values => white, black, yellow, red, blue, green")
+
 	flag.Parse()
 
 	if !strings.Contains(url, "://") {
@@ -118,6 +121,21 @@ func main() {
 			p.SetRect(0, 0, 1000, len(sets)+1*100)
 
 			p.Border = false
+
+			switch color {
+			case "white":
+				p.TextStyle.Fg = ui.ColorWhite
+			case "yellow":
+				p.TextStyle.Fg = ui.ColorYellow
+			case "blue":
+				p.TextStyle.Fg = ui.ColorBlue
+			case "red":
+				p.TextStyle.Fg = ui.ColorRed
+			case "green":
+				p.TextStyle.Fg = ui.ColorGreen
+			default:
+				p.TextStyle.Fg = ui.ColorBlack
+			}
 
 			if txt == "" {
 				txt = fmt.Sprintf("Date: %v | URL: %v | Frequency: %vs\n\n", time.Now().Format(time.RFC1123), url, float64(*frequency)/1000)
